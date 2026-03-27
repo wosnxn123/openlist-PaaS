@@ -34,32 +34,6 @@
 | **媒体测试版** | `amsnowflake/openlist-for-paas:beta-media` |
 | **指定版本 (如v4.1.0)** | `amsnowflake/openlist-for-paas:v4.1.0` |
 
-### Docker CLI 部署示例
-
-```bash
-docker run -d \
-  --restart=always \
-  -v /你的本地路径/data:/opt/openlist/data \
-  -p 5244:5244 \
-  --name openlist \
-  amsnowflake/openlist-for-paas:latest
-```
-
-### Docker Compose 部署示例
-
-```yaml
-version: '3.3'
-services:
-    openlist:
-        restart: always
-        volumes:
-            - './data:/opt/openlist/data'
-        ports:
-            - '5244:5244'
-        container_name: openlist
-        image: '<amsnowflake>/openlist-for-paas:latest'
-```
-
 ## 🛠️ 自己动手构建 (Fork)
 
 如果你想用自己的账号自动构建，只需按照以下步骤操作：
@@ -75,8 +49,3 @@ services:
 
 - OpenListTeam/OpenList [<sup>1</sup>](https://github.com/OpenListTeam/OpenList) - 核心程序提供者。
 - 此项目仅做权限适配层的打包构建，所有解释权和开源协议同上游项目。
-```
-
-### 修改小提示：
-1. 记得把文档里面的 `<你的DockerHub用户名>` 替换成你真实的 Docker Hub 账户名称（比如如果是 `jack123`，那镜像名就是 `jack123/openlist-for-paas:latest`）。
-2. 文档顶部的两个徽章（Badge）URL 里也包含了你的 GitHub 用户名，记得修改正确，这样它就能在 README 里显示漂亮的绿色 "passing" 状态标签了！
