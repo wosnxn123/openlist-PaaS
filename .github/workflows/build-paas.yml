@@ -1,4 +1,4 @@
-name: Build OpenList for PaaS (Docker Hub)
+name: Build OpenList PaaS (Docker Hub)
 
 on:
   schedule:
