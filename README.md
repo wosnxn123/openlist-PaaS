@@ -1,6 +1,7 @@
 # 🚀 OpenList for PaaS
 
 [!Build OpenList for PaaS [<sup>1</sup>](https://github.com/wosnxn123/openlist-for-PaaS>/actions/workflows/build-paas.yml/badge.svg)](https://github.com/wosnxn123/openlist-for-PaaS/actions/workflows/build-paas.yml)
+
 [!Docker Pulls [<sup>2</sup>](https://img.shields.io/docker/pulls/amsnowflake/openlist-for-paas.svg)](https://hub.docker.com/r/amsnowflake/openlist-for-paas)
 
 本项目专为各类 **PaaS 平台**（如 Koyeb, Render, Heroku, HuggingFace, ClawCloud 等）提供完美兼容的 OpenList [<sup>3</sup>](https://github.com/OpenListTeam/OpenList) Docker 镜像。
