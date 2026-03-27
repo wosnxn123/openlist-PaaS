@@ -31,7 +31,6 @@
 | :--- | :--- |
 | **最新正式版** | `amsnowflake/openlist-for-paas:latest` |
 | **测试版** | `amsnowflake/openlist-for-paas:beta` |
-| **媒体测试版** | `amsnowflake/openlist-for-paas:beta-media` |
 | **指定版本 (如v4.1.0)** | `amsnowflake/openlist-for-paas:v4.1.0` |
 
 ## 🛠️ 自己动手构建 (Fork)
