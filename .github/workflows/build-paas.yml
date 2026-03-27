@@ -81,4 +81,4 @@ jobs:
           push: true
           # 全架构构建：同时输出官方支持的 5 种主流和嵌入式/ARM架构
           platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v6,linux/386
-          tags: ${{ secrets.DOCKER_USERNAME }}/openlist-for-paas:${{ matrix.tag }}
+          tags: ${{ secrets.DOCKER_USERNAME }}/openlist-paas:${{ matrix.tag }}
