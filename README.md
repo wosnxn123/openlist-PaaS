@@ -1,4 +1,4 @@
-# 🚀 OpenList for PaaS
+# 🚀 OpenList PaaS
 
 本项目专为各类 **PaaS 平台**（如 Koyeb, Render, Heroku, HuggingFace, ClawCloud 等）提供完美兼容的 [OpenList](https://github.com/dudor/openlist)  Docker 镜像。
 
