@@ -2,13 +2,8 @@ name: Build OpenList for PaaS
 
 on:
   schedule:
-    - cron: '0 2 * * *' # 每天北京时间上午 10 点运行
-  workflow_dispatch: # 支持手动触发
-
-# 赋予推送到 GitHub Packages 的权限
-permissions:
-  contents: read
-  packages: write
+    - cron: '0 2 * * *'
+  workflow_dispatch:
 
 jobs:
   prepare-tags:
@@ -16,12 +11,12 @@ jobs:
     outputs:
       matrix_json: ${{ steps.get-tags.outputs.matrix_json }}
     steps:
-      - name: 获取最新正式版本号
+      - name: 获取官方最新正式版号
         id: get-tags
         run: |
           LATEST_VERSION=$(curl -sL https://api.github.com/repos/OpenListTeam/OpenList/releases/latest | jq -r .tag_name)
-          if[ "$LATEST_VERSION" == "null" ] || [ -z "$LATEST_VERSION" ]; then
-            LATEST_VERSION="v4.1.0" # 失败时的保底版本
+          if [ "$LATEST_VERSION" == "null" ] ||[ -z "$LATEST_VERSION" ]; then
+            LATEST_VERSION="v4.1.0"
           fi
           echo "matrix_json=[\"beta\", \"latest\", \"$LATEST_VERSION\"]" >> $GITHUB_OUTPUT
 
@@ -33,8 +28,13 @@ jobs:
       matrix:
         tag: ${{ fromJson(needs.prepare-tags.outputs.matrix_json) }}
     
+    # 赋予推送到 GitHub 容器仓库 (GHCR) 的权限
+    permissions:
+      contents: read
+      packages: write
+
     steps:
-      - name: 设置多架构支持 (QEMU)
+      - name: 设置 QEMU (支持多架构)
         uses: docker/setup-qemu-action@v3
         
       - name: 设置 Docker Buildx
@@ -46,27 +46,24 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: 登录 GitHub 容器仓库 (ghcr.io)
+      - name: 登录 GitHub 容器仓库 (GHCR)
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: 确定基础镜像并转换用户名
+      - name: 准备环境变量
         run: |
-          # 区分 beta 和正式版的基础镜像源
           if[ "${{ matrix.tag }}" == "beta" ]; then
             echo "BASE_IMAGE=ghcr.io/openlistteam/openlist-git:beta" >> $GITHUB_ENV
           else
             echo "BASE_IMAGE=openlistteam/openlist:${{ matrix.tag }}" >> $GITHUB_ENV
           fi
-          
-          # 将 GitHub 用户名转换为小写，以符合 Docker 镜像命名规范
-          REPO_OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
-          echo "REPO_OWNER=$REPO_OWNER" >> $GITHUB_ENV
+          # 将 GitHub 用户名转为小写，防止 Docker 镜像名规范报错
+          echo "OWNER_LC=${GITHUB_REPOSITORY_OWNER,,}" >> $GITHUB_ENV
 
-      - name: 生成兼容 PaaS 的 Dockerfile
+      - name: 动态生成 Dockerfile
         run: |
           cat <<EOF > Dockerfile
           FROM $BASE_IMAGE
@@ -74,13 +71,14 @@ jobs:
           RUN mkdir -p /opt/openlist/data && chmod -R 777 /opt/openlist/data
           EOF
 
-      - name: 构建并同时推送到 Docker Hub 和 GitHub
+      - name: 构建并推送到 Docker Hub 和 GitHub
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./Dockerfile
           push: true
+          # 构建官方支持的全部架构
           platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v6,linux/386
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/openlist-for-paas:${{ matrix.tag }}
-            ghcr.io/${{ env.REPO_OWNER }}/openlist-for-paas:${{ matrix.tag }}
+            ghcr.io/${{ env.OWNER_LC }}/openlist-for-paas:${{ matrix.tag }}
