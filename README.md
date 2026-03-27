@@ -1,9 +1,9 @@
 # 🚀 OpenList for PaaS
 
-[!Build OpenList for PaaS [<sup>1</sup>](https://github.com/你的GitHub用户名/openlist-for-PaaS/actions/workflows/build-paas.yml/badge.svg)](https://github.com/你的GitHub用户名/openlist-for-PaaS/actions/workflows/build-paas.yml)
-[!Docker Pulls [<sup>2</sup>](https://img.shields.io/docker/pulls/<你的DockerHub用户名>/openlist-for-paas.svg)](https://hub.docker.com/r/<你的DockerHub用户名>/openlist-for-paas)
+[!Build OpenList for PaaS [<sup>2</sup>](https://github.com/你的GitHub用户名/openlist-for-PaaS/actions/workflows/build-paas.yml/badge.svg)](https://github.com/你的GitHub用户名/openlist-for-PaaS/actions/workflows/build-paas.yml)
+[!Docker Pulls [<sup>3</sup>](https://img.shields.io/docker/pulls/你的DockerHub用户名/openlist-for-paas.svg)](https://hub.docker.com/r/你的DockerHub用户名/openlist-for-paas)
 
-本项目专为各类 **PaaS 平台**（如 Koyeb, Render, Heroku, HuggingFace, ClawCloud 等）提供完美兼容的 OpenList [<sup>3</sup>](https://github.com/OpenListTeam/OpenList) Docker 镜像。
+本项目专为各类 **PaaS 平台**（如 Koyeb, Render, Heroku, HuggingFace, ClawCloud 等）提供完美兼容的 OpenList Docker 镜像。
 
 ## 💡 为什么会有这个项目？
 
@@ -32,10 +32,10 @@
 
 | 版本类型 | 对应的 Docker 镜像名 |
 | :--- | :--- |
-| **最新正式版** | `<你的DockerHub用户名>/openlist-for-paas:latest` |
-| **测试版** | `<你的DockerHub用户名>/openlist-for-paas:beta` |
-| **媒体测试版** | `<你的DockerHub用户名>/openlist-for-paas:beta-media` |
-| **指定版本 (如v4.1.0)** | `<你的DockerHub用户名>/openlist-for-paas:v4.1.0` |
+| **最新正式版** | `你的DockerHub用户名/openlist-for-paas:latest` |
+| **测试版** | `你的DockerHub用户名/openlist-for-paas:beta` |
+| **媒体测试版** | `你的DockerHub用户名/openlist-for-paas:beta-media` |
+| **指定版本 (如v4.1.0)** | `你的DockerHub用户名/openlist-for-paas:v4.1.0` |
 
 ### Docker CLI 部署示例
 
@@ -45,7 +45,7 @@ docker run -d \
   -v /你的本地路径/data:/opt/openlist/data \
   -p 5244:5244 \
   --name openlist \
-  <你的DockerHub用户名>/openlist-for-paas:latest
+  你的DockerHub用户名/openlist-for-paas:latest
 ```
 
 ### Docker Compose 部署示例
@@ -60,7 +60,7 @@ services:
         ports:
             - '5244:5244'
         container_name: openlist
-        image: '<你的DockerHub用户名>/openlist-for-paas:latest'
+        image: '你的DockerHub用户名/openlist-for-paas:latest'
 ```
 
 ## 🛠️ 自己动手构建 (Fork)
@@ -76,6 +76,5 @@ services:
 
 ## 鸣谢
 
-- OpenListTeam/OpenList [<sup>3</sup>](https://github.com/OpenListTeam/OpenList) - 核心程序提供者。
+- OpenListTeam/OpenList [<sup>4</sup>](https://github.com/OpenListTeam/OpenList) - 核心程序提供者。
 - 此项目仅做权限适配层的打包构建，所有解释权和开源协议同上游项目。
-```
