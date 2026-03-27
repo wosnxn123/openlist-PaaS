@@ -1,84 +1,88 @@
-name: Build OpenList for PaaS (Docker Hub)
+name: 构建适用于PaaS的OpenList (Docker Hub 和 GitHub)
 
 on:
   schedule:
-    - cron: '0 2 * * *' # 每天 UTC 时间 2 点自动运行（北京时间上午 10 点）
-  workflow_dispatch: # 支持在 GitHub 网页上点击按钮手动触发
+    - cron: '0 2 * * *'
+  workflow_dispatch:
 
 jobs:
-  # 任务 1：动态获取最新的正式版 Tag 并准备矩阵数组
   prepare-tags:
     runs-on: ubuntu-latest
     outputs:
       matrix_json: ${{ steps.get-tags.outputs.matrix_json }}
     steps:
-      - name: Fetch Latest Release Tag
+      - name: 获取最新正式版标签
         id: get-tags
         run: |
-          # 动态获取 OpenList 官方最新的 Release 版本号 (例如 v4.1.0)
           LATEST_VERSION=$(curl -sL https://api.github.com/repos/OpenListTeam/OpenList/releases/latest | jq -r .tag_name)
           
-          # 防错机制：如果 API 请求失败，默认给一个保底的正式版本
           if [ "$LATEST_VERSION" == "null" ] ||[ -z "$LATEST_VERSION" ]; then
             LATEST_VERSION="v4.1.0"
           fi
           
           echo "获取到官方最新版本号: $LATEST_VERSION"
-          
-          # 生成一个 JSON 数组，包含 beta、latest 和 当前最新版本号，传给下一步
           echo "matrix_json=[\"beta\", \"latest\", \"$LATEST_VERSION\"]" >> $GITHUB_OUTPUT
 
-  # 任务 2：使用上一个任务提供的数组，并行构建 3 个版本
   build-and-push:
     needs: prepare-tags
     runs-on: ubuntu-latest
+    
+    permissions:
+      packages: write
+      contents: read
+
     strategy:
       fail-fast: false
       matrix:
         tag: ${{ fromJson(needs.prepare-tags.outputs.matrix_json) }}
     
     steps:
-      - name: Set up QEMU for Multi-arch
+      - name: 设置QEMU以支持多架构
         uses: docker/setup-qemu-action@v3
         
-      - name: Set up Docker Buildx
+      - name: 设置Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Login to Docker Hub
+      - name: 登录Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Determine Official Base Image
+      - name: 登录GitHub容器仓库
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 将GitHub用户名转换为小写
+        run: echo "GH_OWNER=${GITHUB_REPOSITORY_OWNER,,}" >> $GITHUB_ENV
+
+      - name: 确定官方基础镜像
         run: |
-          # 官方的 beta 版本通常在 GitHub 的 ghcr.io 上，正式版和 latest 在 Docker Hub 上
           if [ "${{ matrix.tag }}" == "beta" ]; then
             echo "BASE_IMAGE=ghcr.io/openlistteam/openlist-git:beta" >> $GITHUB_ENV
           else
             echo "BASE_IMAGE=openlistteam/openlist:${{ matrix.tag }}" >> $GITHUB_ENV
           fi
 
-      - name: Generate Wrapper Dockerfile
+      - name: 生成包装Dockerfile
         run: |
-          # 自动生成基于官方镜像的 Dockerfile
           cat <<EOF > Dockerfile
           FROM $BASE_IMAGE
-          
-          # 1. 切换回 root 用户，获取最高权限
           USER root
-          
-          # 2. 赋予 /opt/openlist/data 目录 777 权限，以兼容 PaaS 随机分配的只读用户环境
           RUN mkdir -p /opt/openlist/data && \
               chmod -R 777 /opt/openlist/data
           EOF
 
-      - name: Build and Push to Docker Hub
+      - name: 构建并推送到双端仓库
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./Dockerfile
           push: true
-          # 全架构构建：同时输出官方支持的 5 种主流和嵌入式/ARM架构
           platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v6,linux/386
-          tags: ${{ secrets.DOCKER_USERNAME }}/openlist-for-paas:${{ matrix.tag }}
+          tags: |
+            ${{ secrets.DOCKER_USERNAME }}/openlist-for-paas:${{ matrix.tag }}
+            ghcr.io/${{ env.GH_OWNER }}/openlist-for-paas:${{ matrix.tag }}
