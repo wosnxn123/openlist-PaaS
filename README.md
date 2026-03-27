@@ -29,9 +29,9 @@
 
 | 版本类型 | 对应的 Docker 镜像名 |
 | :--- | :--- |
-| **最新正式版** | `amsnowflake/openlist-for-paas:latest` |
-| **测试版** | `amsnowflake/openlist-for-paas:beta` |
-| **指定版本 (如v4.1.0)** | `amsnowflake/openlist-for-paas:v4.1.0` |
+| **最新正式版** | `amsnowflake/openlist-paas:latest` |
+| **测试版** | `amsnowflake/openlist-paas:beta` |
+| **指定版本 (如v4.1.10)** | `amsnowflake/openlist-paas:v4.1.10` |
 
 ## 🛠️ 自己动手构建 (Fork)
 
@@ -42,7 +42,7 @@
 3. 添加两个 Secrets：
    - `DOCKER_USERNAME`: 你的 Docker Hub 用户名
    - `DOCKER_PASSWORD`: 你的 Docker Hub 密码或访问令牌 (Access Token)
-4. 进入 `Actions` 选项卡，手动触发一次 `Build OpenList for PaaS (Docker Hub)` 工作流即可。
+4. 进入 `Actions` 选项卡，手动触发一次 `Build OpenList PaaS (Docker Hub)` 工作流即可。
 
 ## 鸣谢
 
