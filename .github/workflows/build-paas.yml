@@ -15,12 +15,12 @@ jobs:
       - name: Fetch Latest Release Tag
         id: get-tags
         run: |
-          # 动态获取 OpenList 官方最新的 Release 版本号 (例如 v4.1.0)
+          # 动态获取 OpenList 官方最新的 Release 版本号 (例如 v4.1.10)
           LATEST_VERSION=$(curl -sL https://api.github.com/repos/OpenListTeam/OpenList/releases/latest | jq -r .tag_name)
           
           # 防错机制：如果 API 请求失败，默认给一个保底的正式版本
           if [ "$LATEST_VERSION" == "null" ] ||[ -z "$LATEST_VERSION" ]; then
-            LATEST_VERSION="v4.1.0"
+            LATEST_VERSION="v4.1.10"
           fi
           
           echo "获取到官方最新版本号: $LATEST_VERSION"
