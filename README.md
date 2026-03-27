@@ -29,10 +29,10 @@
 
 | 版本类型 | 对应的 Docker 镜像名 |
 | :--- | :--- |
-| **最新正式版** | `<你的DockerHub用户名>/openlist-for-paas:latest` |
-| **测试版** | `<你的DockerHub用户名>/openlist-for-paas:beta` |
-| **媒体测试版** | `<你的DockerHub用户名>/openlist-for-paas:beta-media` |
-| **指定版本 (如v4.1.0)** | `<你的DockerHub用户名>/openlist-for-paas:v4.1.0` |
+| **最新正式版** | `amsnowflake/openlist-for-paas:latest` |
+| **测试版** | `amsnowflake/openlist-for-paas:beta` |
+| **媒体测试版** | `amsnowflake/openlist-for-paas:beta-media` |
+| **指定版本 (如v4.1.0)** | `amsnowflake/openlist-for-paas:v4.1.0` |
 
 ### Docker CLI 部署示例
 
@@ -42,7 +42,7 @@ docker run -d \
   -v /你的本地路径/data:/opt/openlist/data \
   -p 5244:5244 \
   --name openlist \
-  <amsnowflake>/openlist-for-paas:latest
+  amsnowflake/openlist-for-paas:latest
 ```
 
 ### Docker Compose 部署示例
